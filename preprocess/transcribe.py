@@ -1,6 +1,8 @@
 import argparse
-import whisper
 import json
+import os
+import sys
+import whisper
 
 def transcribe(audio_path, output_dir, output_format, whisper_model, language, temperature):
     """
@@ -39,6 +41,10 @@ if __name__ == "__main__":
     parser.add_argument("--temperature", type=float, help="Temperature for scaling. Defaults to 0.0.", default=0.0)
 
     args = parser.parse_args()
+
+    if os.path.exists(os.path.join(args.output_dir, args.audio.rsplit(".", 1)[0] + ".json")):
+        print(f"Transcript for file {args.audio} already exists in output directory {args.output_dir}.", "DONE.")
+        sys.exit(0)
 
     transcribe(args.audio, args.output_dir, args.output_format, args.whisper_model, args.language, args.temperature)
     print("DONE.")
