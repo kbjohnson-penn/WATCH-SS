@@ -18,7 +18,7 @@ def transcribe(audio_path, output_dir, output_format, whisper_model, language, t
         None
     """
     # Transcribe audio with Whisper
-    model = whisper.load_model(whisper_model)
+    model = whisper.load_model(whisper_model, device="cuda")
     result = model.transcribe(audio_path, language=language, temperature=temperature, word_timestamps=True)
 
     # Save the result
@@ -28,11 +28,6 @@ def transcribe(audio_path, output_dir, output_format, whisper_model, language, t
     results_writer = whisper.utils.get_writer(output_format, output_dir)
     results_writer(result, audio_path)
 
-    # if output_path is None:
-    #     output_path = audio_path.rsplit(".", 1)[0] + "_whispertrans.json"
-
-    # with open(output_path, "w") as outfile:
-    #     json.dumps(result, outfile)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
