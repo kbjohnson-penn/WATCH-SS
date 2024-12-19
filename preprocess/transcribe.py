@@ -42,9 +42,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if os.path.exists(os.path.join(args.output_dir, args.audio.rsplit(".", 1)[0] + ".json")):
-        print(f"Transcript for file {args.audio} already exists in output directory {args.output_dir}.", "DONE.")
-        sys.exit(0)
+    if os.path.exists(os.path.join(args.output_dir, os.path.basename(args.audio).rsplit(".", 1)[0] + ".json")):
+        print(f"Transcript for file {args.audio} already exists in output directory {args.output_dir}.")
+    else:
+        transcribe(args.audio, args.output_dir, args.output_format, args.whisper_model, args.language, args.temperature)
 
-    transcribe(args.audio, args.output_dir, args.output_format, args.whisper_model, args.language, args.temperature)
     print("DONE.")
+    
