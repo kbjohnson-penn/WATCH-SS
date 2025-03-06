@@ -47,7 +47,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_size", type=str, help="Whisper model. Defaults to \"large-v3 turbo\".", default="turbo")
     parser.add_argument("--language", type=str, help="Audio language. Defaults to English (\"en\").", default="en")
     parser.add_argument("--temperature", type=float, help="Temperature for scaling. Defaults to 0.0.", default=0.0)
-    parser.add_argument("--device", type=str, help="Device. Defaults to \"cuda\".", default="cuda:0")
+    parser.add_argument("--device", type=str, help="Device. Defaults to \"cuda\".", default="cuda")
     parser.add_argument("--output_format", type=str, help="Whisper output format. Defaults to \"json\".", default="json")
     parser.add_argument("--output_dir", type=str, help="Output directory. Defaults to the same directory as the input video.", default=None)
 
