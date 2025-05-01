@@ -1,6 +1,7 @@
 import argparse
 import os
 import whisper
+from pprint import pprint
 
 def transcribe(audio_path, model_size, language, temperature, device, output_format, output_dir):
     """
@@ -29,6 +30,7 @@ def transcribe(audio_path, model_size, language, temperature, device, output_for
 
     # Transcribe
     result = model.transcribe(audio, language=language, temperature=temperature, word_timestamps=True)
+    pprint(result)
 
     # Save the result
     if output_dir is None:

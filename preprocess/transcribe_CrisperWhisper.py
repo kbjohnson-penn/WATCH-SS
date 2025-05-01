@@ -5,6 +5,9 @@ import numpy as np
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from whisper.audio import load_audio, SAMPLE_RATE
+from whisper.utils import get_writer
+
+from pprint import pprint
 
 HF_TOKEN = "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"
 
@@ -74,17 +77,24 @@ def adjust_pauses_for_hf_pipeline_output(pipeline_output, split_threshold=0.12):
 
             # Adjust next chunk start time
             adjusted_chunks[i + 1]["timestamp"] = (next_start - distribute, next_end)
+    
     pipeline_output["chunks"] = adjusted_chunks
 
     return pipeline_output
 
-def transcribe(audio_file, chunk_size_ms, output_dir, output_fmt):
+def add_t_offset(chunks, offset_s):
+    for chk in chunks:
+        chk["timestamp"] = (chk["timestamp"][0] + offset_s, chk["timestamp"][1] + offset_s)
+
+    return chunks
+
+def transcribe(audio_file, chunk_size_s, output_dir, output_fmt):
     """
     Transcribe a audio file with CrisperWhisper and write result to file.
 
     args:
         audio_file (str): Path to audio file
-        chunk_size_ms (int) : Chunk size in milliseconds
+        chunk_size_s (int) : Chunk size in seconds
         output_dir (str): Path to output file
         output_format (str): Whisper output format (e.g., tsv, json)
 
@@ -99,7 +109,7 @@ def transcribe(audio_file, chunk_size_ms, output_dir, output_fmt):
 
     # Transcribe audio in chunks (necessary to fit within A100's memory)
     result = None
-    audio_chunks = np.array_split(audio, audio.shape[0] // chunk_size_ms)
+    audio_chunks = np.array_split(audio, audio.shape[0] // (SAMPLE_RATE * chunk_size_s))
     for i, a_chunk in enumerate(audio_chunks):
         print("Chunk %d size %d" % (i, a_chunk.shape[0]))
         try:
@@ -114,21 +124,22 @@ def transcribe(audio_file, chunk_size_ms, output_dir, output_fmt):
             result = chunk_result
         else:
             result["text"] = result["text"] + " " + chunk_result["text"]
-            result["chunks"] = result["chunks"] + chunk_result["chunks"]
+            result["chunks"] = result["chunks"] + add_t_offset(chunk_result["chunks"], chunk_size_s*i)
 
+    pprint(result)
+    
     # Save the result 
-    # results_writer = whisper.utils.get_writer(output_fmt, output_dir)
-    # results_writer(result, audio_file, {})
+    results_writer = get_writer(output_fmt, output_dir)
+    results_writer(result, audio_file, {})
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--audio", type=str, default="/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/sim_center/CSI Green Case.mp4")
+    parser.add_argument("--audio", type=str, required=True)
     parser.add_argument("--chunk_size_s", type=int, default=10)
     parser.add_argument("--output_dir", type=str, default=".")
     parser.add_argument("--output_format", type=str, default="json")
-    parser.add_argument("-f")
 
     args = parser.parse_args()
 
-    transcribe(args.audio, SAMPLE_RATE * args.chunk_size_s, args.output_dir, args.output_format)
+    transcribe(args.audio, args.chunk_size_s, args.output_dir, args.output_format)
     print("DONE.")
