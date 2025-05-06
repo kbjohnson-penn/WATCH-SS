@@ -46,5 +46,24 @@ def load_CHAT_transcripts():
     transcripts["Paraphasic speech"] = transcripts["Transcript"].str.contains(r"\[\* [A-Za-z0-9:=\-\']+\]|\[//\]").astype(int)
     transcripts["Vague speech"] = transcripts["Transcript"].str.contains(r"\[\+ (?:jar|es|cir)\]").astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Utterance", "Filler speech", "Repetitive speech", "Vague speech", "Speech delays", "Paraphasic speech"]]
-    
+    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Utterance", "Filler speech", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
+
+def load_labels():
+    # control train
+    temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp1.columns = temp1.columns.str.strip()
+    temp1["gender"] = temp1["gender"].map({" male ": 0, " female ": 1})
+    temp1["Label"] = 0
+    # dementia train
+    temp2 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp2.columns = temp2.columns.str.strip()
+    temp2["gender"] = temp2["gender"].map({" male ": 0, " female ": 1})
+    temp2["Label"] = 1
+    # test
+    temp3 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/test/meta_data.txt", delimiter=";", index_col="ID   ")
+    temp3.columns = temp3.columns.str.strip()
+
+    lbls = pd.concat([temp1, temp2, temp3], axis=0, keys=["train", "train", "test"])
+    lbls["mmse"] = pd.to_numeric(lbls["mmse"], errors="coerce")
+
+    return lbls
