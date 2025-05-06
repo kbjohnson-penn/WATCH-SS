@@ -61,6 +61,10 @@ def load_transcripts():
     transcripts = pd.concat(transcripts, keys=idxs, names=["visit_file", "line_num"])
     return transcripts
 
+def load_labels():
+    lbls = pd.read_excel("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/swimcap/Penn OBSERVER/cognitive_test_scores.xlsx")
+    return lbls
+
 def load():
     visits = load_visits()
     # transcripts = load_transcripts()
