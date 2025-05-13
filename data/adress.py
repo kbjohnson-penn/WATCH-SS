@@ -3,14 +3,14 @@ import pylangacq
 import re
 
 def clean_CHAT_text(text):
-    text = re.sub(r"\[.*?\]", "", text)                                                     # remove CHAT "[...]" tags
+    text = re.sub(r"\[.*?\]\s*", "", text)                                                     # remove CHAT "[...]" tags
+    text = re.sub(r"<\s*(.*?)\s*>", r"\1", text)                                            # remove CHAT "<...>" tags
     text = re.sub(r"\(\.{1,3}\)", "[silence]", text)                                        # replace pause tags with ellipses
     text = re.sub(r"\([^)]*\)", "", text)                                                   # removing unspoken characters
     text = re.sub(r"xxx", "[inaudible]", text)                                              # replace unintelligible segment tags with inaudible tag to mimic Datagain
     text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
     text = re.sub(r"&(\w+)", r"\1", text)                                                   # remove & prefix for Fragments, Fillers, and Nonwords
     text = re.sub(r"\+\S+", "", text)                                                       # remove special utterance terminators
-    text = re.sub(r"<\s*(.*?)\s*>", r"\1", text)                                            # remove CHAT "<...>" tags
     text = re.sub(r"@\S+", "", text)                                                        # remove special form markers
     text = re.sub(r"([^\s_]+(?:_[^\s_]+)+)", lambda m: m.group(1).replace("_", " "), text)  # split compounds
     text = re.sub(r"‡", "", text)                                                           # remove satellite markers
@@ -33,11 +33,11 @@ def load_CHAT_transcripts():
         transcripts.append( pd.DataFrame(data, columns=["T_start_ms", "T_end_ms", "Speaker", "Transcript"]) )
 
     # post processing
-    transcripts = pd.concat(transcripts, keys=idxs, names=["train_test", "patient_id", "line_num"])
+    transcripts = pd.concat(transcripts, keys=idxs, names=["split", "ID", "utt_num"])
     transcripts["Timestamp"] = transcripts["T_start_ms"].apply(lambda x: f"{int((x / 1000) // 3600):02}:{int(((x / 1000) % 3600) // 60):02}:{int((x / 1000) % 60):02}")
     transcripts["Speaker"] = transcripts["Speaker"].map({"PAR": "Patient", "INV": "Provider"})
-    transcripts["Transcript_clean"] = transcripts["Transcript"].apply(clean_CHAT_text).str.rstrip()
-    transcripts["Utterance"] = transcripts.apply(lambda x: f"[{str(x.Timestamp)}] {x.Speaker.upper()}: {x.Transcript_clean}", axis=1)
+    transcripts["Transcript"] = transcripts["Transcript"].str.strip()
+    transcripts["Transcript_clean"] = transcripts["Transcript"].apply(clean_CHAT_text).str.strip()
 
     # labeling
     transcripts["Filler speech"] = transcripts["Transcript"].str.contains(r"&\w+").astype(int)
@@ -46,7 +46,7 @@ def load_CHAT_transcripts():
     transcripts["Paraphasic speech"] = transcripts["Transcript"].str.contains(r"\[\* [A-Za-z0-9:=\-\']+\]|\[//\]").astype(int)
     transcripts["Vague speech"] = transcripts["Transcript"].str.contains(r"\[\+ (?:jar|es|cir)\]").astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Utterance", "Filler speech", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
+    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
 
 def load_labels():
     # control train
@@ -65,5 +65,6 @@ def load_labels():
 
     lbls = pd.concat([temp1, temp2, temp3], axis=0, keys=["train", "train", "test"])
     lbls["mmse"] = pd.to_numeric(lbls["mmse"], errors="coerce")
+    lbls.index.names = ["split", "ID"]
 
     return lbls
