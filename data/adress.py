@@ -53,15 +53,16 @@ def load_labels():
     temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
     temp1.columns = temp1.columns.str.strip()
     temp1["gender"] = temp1["gender"].map({" male ": 0, " female ": 1})
-    temp1["Label"] = 0
+    temp1["AD_dx"] = 0
     # dementia train
     temp2 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
     temp2.columns = temp2.columns.str.strip()
     temp2["gender"] = temp2["gender"].map({" male ": 0, " female ": 1})
-    temp2["Label"] = 1
+    temp2["AD_dx"] = 1
     # test
     temp3 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/test/meta_data.txt", delimiter=";", index_col="ID   ")
     temp3.columns = temp3.columns.str.strip()
+    temp3 = temp3.rename(columns={"Label": "AD_dx"})
 
     lbls = pd.concat([temp1, temp2, temp3], axis=0, keys=["train", "train", "test"])
     lbls["mmse"] = pd.to_numeric(lbls["mmse"], errors="coerce")
