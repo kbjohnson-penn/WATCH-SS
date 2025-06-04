@@ -8,3 +8,4 @@ openai
 spacy
 sentence-transformers
 thefuzz
+shap
