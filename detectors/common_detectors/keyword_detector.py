@@ -1,9 +1,32 @@
 import numpy as np
-from itertools import islice
+# nlp modules
+import spacy
+from spacy.matcher import Matcher
+from spacy.language import Language
+from spacy.tokens import Token
+
+Token.set_extension("is_silence_tag", default=False)
+
+@Language.component("set_silence_tags")
+def set_silence_tags(doc):
+    for token in doc:
+        if token.text == "[silence]":
+            token._.is_silence_tag = True    
+    return doc
 
 class KeywordDetector:
     def __init__(self, keywords):
         self.keywords = keywords
+
+        # Load spacy vocabulary
+        self.nlp = spacy.load("en_core_web_md")
+        self.nlp.tokenizer.add_special_case("[silence]", [{"ORTH": "[silence]"}])
+        self.nlp.add_pipe("set_silence_tags", first=True)
+
+        # Create spacy matcher
+        self.matcher = Matcher(self.nlp.vocab)
+        patterns = [[{"LOWER": w}  for w in kw.lower().split()] for kw in self.keywords]
+        self.matcher.add("fillers", patterns)
 
     def get_keywords(self):
         '''
@@ -11,26 +34,23 @@ class KeywordDetector:
         '''
         return self.keywords
 
-    def ngrams(self, tokens, n):
-        '''
-        Generate n-grams.
-        '''
-        return list(zip(*(islice(tokens, i, None) for i in range(n))))
-
-    def detect(self, text):
+    def detect(self, text, return_doc=False):
         '''
         Detect keywords in text.
-        '''
-        tokens = text.split()    # tokenize text
-        
-        output = np.zeros(len(tokens))
-        for kw in self.keywords:
-            kw_len = len(kw.split())
-            n_grams = self.ngrams(tokens, kw_len)     # generate n-grams the same length as the keyword
-            for i, ng in enumerate(n_grams):
-                phrase = " ".join([tok.lower() for tok in ng])
-                if phrase == kw:    # check for exact match
-                    indices = list(range(i, i + kw_len))
-                    output[indices] = 1
 
-        return output
+        args:
+            text (str) - input text
+            return_doc (bool) - whether to return the spacy doc (default is False)
+        '''
+        # Tokenize the input text
+        doc = self.nlp(text)
+        # Run spacy matcher
+        matches = self.matcher(doc)
+
+        output = []
+        for match_id, start_token, end_token in matches:
+            span = doc[start_token:end_token]
+            output.append((span.start_char, span.end_char))
+
+        return output, doc if return_doc else output
+    
