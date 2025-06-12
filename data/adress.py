@@ -3,12 +3,14 @@ import pylangacq
 import re
 
 def clean_CHAT_text(text):
-    text = re.sub(r"\[.*?\]\s*", "", text)                                                     # remove CHAT "[...]" tags
+    text = re.sub(r"\[.*?\]\s*", "", text)                                                  # remove CHAT "[...]" tags
+    text = re.sub(r"\+<", "", text)                                                          # remove lazy overlap tags
     text = re.sub(r"<\s*(.*?)\s*>", r"\1", text)                                            # remove CHAT "<...>" tags
     text = re.sub(r"\(\.{1,3}\)", "[silence]", text)                                        # replace pause tags with ellipses
     text = re.sub(r"\([^)]*\)", "", text)                                                   # removing unspoken characters
     text = re.sub(r"xxx", "[inaudible]", text)                                              # replace unintelligible segment tags with inaudible tag to mimic Datagain
-    text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
+    # text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
+    text = re.sub(r"&=([\w:]+)\s*", "", text)                                                  # remove event tags 
     text = re.sub(r"&(\w+)", r"\1", text)                                                   # remove & prefix for Fragments, Fillers, and Nonwords
     text = re.sub(r"\+\S+", "", text)                                                       # remove special utterance terminators
     text = re.sub(r"@\S+", "", text)                                                        # remove special form markers
@@ -41,12 +43,14 @@ def load_CHAT_transcripts():
 
     # labeling
     transcripts["Filler speech"] = transcripts["Transcript"].str.contains(r"&\w+").astype(int)
-    transcripts["Repetitive speech"] = transcripts["Transcript"].str.contains(r"\[\/\]|\u21AB").astype(int)
+    transcripts["Repetition"] = transcripts["Transcript"].str.contains(r"\[\/\]").astype(int)
+    transcripts["Revision"] = transcripts["Transcript"].str.contains(r"\[\/\/\]").astype(int)
+    transcripts["Repetitive speech"] = (transcripts["Repetition"] | transcripts["Revision"]).astype(int)
     transcripts["Speech delays"] = transcripts["Transcript"].str.contains(r"\(\.{1,3}\)|\^").astype(int)
     transcripts["Paraphasic speech"] = transcripts["Transcript"].str.contains(r"\[\* [A-Za-z0-9:=\-\']+\]|\[//\]").astype(int)
     transcripts["Vague speech"] = transcripts["Transcript"].str.contains(r"\[\+ (?:jar|es|cir)\]").astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
+    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetition", "Revision", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
 
 def load_labels():
     # control train

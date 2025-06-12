@@ -1,11 +1,9 @@
-numpy
-pandas
 openpyxl
 matplotlib
 pylangacq
 tiktoken
 openai
-spacy
 sentence-transformers
-thefuzz
+rapidfuzz
 shap
+joblib
