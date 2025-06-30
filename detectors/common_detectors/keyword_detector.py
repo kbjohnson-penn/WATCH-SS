@@ -1,29 +1,18 @@
-import numpy as np
-# nlp modules
-import spacy
 from spacy.matcher import Matcher
-from spacy.language import Language
-from spacy.tokens import Token
-
-Token.set_extension("is_silence_tag", default=False)
-
-@Language.component("set_silence_tags")
-def set_silence_tags(doc):
-    for token in doc:
-        if token.text == "[silence]":
-            token._.is_silence_tag = True    
-    return doc
 
 class KeywordDetector:
-    def __init__(self, keywords):
+    def __init__(self, keywords, nlp):
+        '''
+        Initialize the keyword detector.
+
+        args:
+            keywords (list) - list of keywords to detect
+            nlp (spacy.lang) - spaCy language model
+        '''
         self.keywords = keywords
+        self.nlp = nlp
 
-        # Load spacy vocabulary
-        self.nlp = spacy.load("en_core_web_md")
-        self.nlp.tokenizer.add_special_case("[silence]", [{"ORTH": "[silence]"}])
-        self.nlp.add_pipe("set_silence_tags", first=True)
-
-        # Create spacy matcher
+        # Create spaCy matcher
         self.matcher = Matcher(self.nlp.vocab)
         patterns = [[{"LOWER": w}  for w in kw.lower().split()] for kw in self.keywords]
         self.matcher.add("fillers", patterns)
@@ -44,6 +33,7 @@ class KeywordDetector:
         '''
         # Tokenize the input text
         doc = self.nlp(text)
+
         # Run spacy matcher
         matches = self.matcher(doc)
 
