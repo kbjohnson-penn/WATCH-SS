@@ -1,16 +1,16 @@
 from spacy.matcher import Matcher
 
 class KeywordDetector:
-    def __init__(self, keywords, nlp):
+    def __init__(self, nlp, keywords):
         '''
         Initialize the keyword detector.
 
         args:
-            keywords (list) - list of keywords to detect
             nlp (spacy.lang) - spaCy language model
+            keywords (list) - list of keywords to detect
         '''
-        self.keywords = keywords
         self.nlp = nlp
+        self.keywords = keywords
 
         # Create spaCy matcher
         self.matcher = Matcher(self.nlp.vocab)

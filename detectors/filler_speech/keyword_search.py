@@ -3,13 +3,13 @@ from ..common_detectors.keyword_detector import KeywordDetector
 # from .keywords_config import keywords
 
 class FillerKeywordDetector(KeywordDetector):
-    def __init__(self, keywords, nlp, flag_nonwords=False):
+    def __init__(self, nlp, keywords, flag_nonwords=False):
         '''
         Initializes the FillerKeywordDetector class.
 
         args:
-            keywords (list) - list of keywords to detect
             nlp (spacy.lang) - spaCy language model
+            keywords (list) - list of keywords to detect
             flag_nonwords (bool) - flag nonwords as filler
         '''
         super().__init__(keywords, nlp)
