@@ -4,13 +4,12 @@ import re
 
 def clean_CHAT_text(text):
     text = re.sub(r"\[.*?\]\s*", "", text)                                                  # remove CHAT "[...]" tags
-    text = re.sub(r"\+<", "", text)                                                          # remove lazy overlap tags
+    text = re.sub(r"\+<", "", text)                                                         # remove lazy overlap tags
     text = re.sub(r"<\s*(.*?)\s*>", r"\1", text)                                            # remove CHAT "<...>" tags
-    text = re.sub(r"\(\.{1,3}\)", "[silence]", text)                                        # replace pause tags with ellipses
+    text = re.sub(r"\(\.{1,3}\)", "[silence]", text)                                        # replace pause tags with silence tag
     text = re.sub(r"\([^)]*\)", "", text)                                                   # removing unspoken characters
-    text = re.sub(r"xxx", "[inaudible]", text)                                              # replace unintelligible segment tags with inaudible tag to mimic Datagain
-    # text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
-    text = re.sub(r"&=([\w:]+)\s*", "", text)                                                  # remove event tags 
+    text = re.sub(r"xxx", "[inaudible]", text)                                              # replace unintelligible segments with inaudible tag to mimic Datagain
+    text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
     text = re.sub(r"&(\w+)", r"\1", text)                                                   # remove & prefix for Fragments, Fillers, and Nonwords
     text = re.sub(r"\+\S+", "", text)                                                       # remove special utterance terminators
     text = re.sub(r"@\S+", "", text)                                                        # remove special form markers
@@ -52,7 +51,7 @@ def load_CHAT_transcripts():
 
     return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetition", "Revision", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
 
-def load_labels():
+def load_outcomes():
     # control train
     temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
     temp1.columns = temp1.columns.str.strip()
