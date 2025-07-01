@@ -1,18 +1,18 @@
 import time
+import mlflow
 import tiktoken
 import openai
 from openai import OpenAI
 
-DB_ENDPOINT_URL     = "https://adb-2035410508966251.11.azuredatabricks.net/serving-endpoints"
-
 class LLMDetector:
-    def __init__(self, endpoint, model, api_token, rpm, tpm, dev_prompt, user_prompt, temperature, top_p, max_output_toks=None, maintain_history=True):
+    def __init__(self, model, api_token, host_url, rpm, tpm, dev_prompt, user_prompt, temperature, top_p, max_output_toks=None, maintain_history=True):
         '''
         Initialize detector.
 
         args:
             model (str) - LLM to use
-            api_token - OpenAI API token
+            api_token (str) - OpenAI API token
+            host_url (str) - host url for Databricks serving endpoint
             rpm (int) - requests per minute
             tpm (int) - tokens per minute
             temperature (float) - temperature to use for LLM
@@ -32,7 +32,7 @@ class LLMDetector:
         self.maintain_history = maintain_history
 
         # Initialize OpenAI API client
-        self.client = OpenAI(api_key=api_token, base_url=DB_ENDPOINT_URL)
+        self.client = OpenAI(api_key=api_token, base_url=host_url)
 
         # Initialize message history
         self.reset_messages()
@@ -49,15 +49,15 @@ class LLMDetector:
         return:
             (list) message history
         '''
-        return self.self.messages
+        return self.messages
     
     def reset_messages(self):
         '''
         Clear message history, preserving the developer prompt if it was provided.
         '''
-        self.self.messages = []
+        self.messages = []
         if self.dev_prompt is not None:
-            self.self.messages.append({"role": "developer", "content": self.dev_prompt})
+            self.messages.append({"role": "developer", "content": self.dev_prompt})
 
     def _count_messages_tokens():
         '''
@@ -138,14 +138,14 @@ class LLMDetector:
         try:
             output = client.chat.completions.create(
                 model=self.model,
-                messages=self.self.messages,
+                messages=self.messages,
                 temperature=self.temperature,
                 top_p=self.top_p,
                 max_completion_tokens=self.max_output_toks
             )
 
             response = output.choices[0].message.content
-            self.self.messages.append({"role": "assistant", "content": response})
+            self.messages.append({"role": "assistant", "content": response})
 
             # Update rate limiting metrics
             self.t_last_request = time.time()
@@ -157,6 +157,7 @@ class LLMDetector:
             print(f"Error calling LLM: {e}")
             return None
 
+    @mlflow.trace
     def detect(self, text):
         '''
         Run detection.
@@ -168,7 +169,7 @@ class LLMDetector:
             (str) LLM response
         '''
         content = text if self.user_prompt is None else self.user_prompt.format(text)
-        self.self.messages.append({"role": "user", "content": content})
+        self.messages.append({"role": "user", "content": content})
 
         output = self._call_llm()
 
