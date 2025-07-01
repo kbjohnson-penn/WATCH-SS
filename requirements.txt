@@ -7,3 +7,4 @@ sentence-transformers
 rapidfuzz
 shap
 joblib
+mlflow[databricks]>=3.1

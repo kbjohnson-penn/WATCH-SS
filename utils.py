@@ -1,8 +1,11 @@
 import re
+# spaCy
 import spacy
 from spacy.language import Language
 from spacy.tokens import Token
 from spacy.tokenizer import Tokenizer
+# MLFlow
+import mlflow
 
 llms = {
     "openai_gpt_4o": {
@@ -26,6 +29,7 @@ llms = {
         "rpm": None
     }
 }
+
 
 
 def create_custom_nlp(model="en_core_web_md"):
@@ -76,3 +80,41 @@ def create_custom_nlp(model="en_core_web_md"):
     
     print(f"Updated pipeline: {nlp.pipe_names}")
     return nlp
+
+
+
+@mlflow.trace
+def llm_call(client, model: str, dev_prompt: str, usr_prompt: str, response_fmt: dict = {"type": "text"}, temperature: float = 0.0, top_p: float = 0.95):
+    '''
+    LLM call function with MLFlow tracing active.
+
+    args:
+        client (openai.OpenAI) : LLM client
+        model (str) : LLM endpoint name
+        dev_prompt (str) : developer prompt
+        usr_prompt (str) : user prompt
+        response_fmt (dict or None) : response format, default = {"type": "text"}
+        temperature (float) : temperature parameter, default = 0.0
+        top_p (float) : top_p parameter, default = 0.95
+
+    return:
+        (str or dict) : LLM response as string or JSON dict if response_fmt indicates JSON
+    '''
+    messages = []
+    if dev_prompt is not None:
+        messgaes.append({"role": "developer", "content": dev_prompt})
+    if usr_prompt is not None:
+        messages.append({"role": "user", "content": usr_prompt})
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        response_format=response_fmt,
+        temperature=temperature,
+        top_p=top_p
+    )
+
+    if "json" in response_fmt["type"].lower():
+        return json.loads(response.choices[0].message.content)
+    else:
+        return response.choices[0].message.content
