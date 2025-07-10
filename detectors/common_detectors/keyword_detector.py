@@ -40,7 +40,7 @@ class KeywordDetector:
         output = []
         for match_id, start_token, end_token in matches:
             span = doc[start_token:end_token]
-            output.append((span.start_char, span.end_char))
+            output.append((span.start_char, span.end_char, span.text))
 
         return output, doc if return_doc else output
     
