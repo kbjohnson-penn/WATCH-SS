@@ -15,6 +15,7 @@ def clean_CHAT_text(text):
     text = re.sub(r"@\S+", "", text)                                                        # remove special form markers
     text = re.sub(r"([^\s_]+(?:_[^\s_]+)+)", lambda m: m.group(1).replace("_", " "), text)  # split compounds
     text = re.sub(r"‡", "", text)                                                           # remove satellite markers
+    text = re.sub(r"(\w+):(\w+)", r"\1\2", text)                                            # remove prolongation markers
     return text
 
 def load_CHAT_transcripts():
@@ -54,16 +55,19 @@ def load_CHAT_transcripts():
 def load_outcomes():
     # control train
     temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp1.index = temp1.index.str.strip()
     temp1.columns = temp1.columns.str.strip()
     temp1["gender"] = temp1["gender"].map({" male ": 0, " female ": 1})
     temp1["AD_dx"] = 0
     # dementia train
     temp2 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp2.index = temp2.index.str.strip()
     temp2.columns = temp2.columns.str.strip()
     temp2["gender"] = temp2["gender"].map({" male ": 0, " female ": 1})
     temp2["AD_dx"] = 1
     # test
     temp3 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/test/meta_data.txt", delimiter=";", index_col="ID   ")
+    temp3.index = temp3.index.str.strip()
     temp3.columns = temp3.columns.str.strip()
     temp3 = temp3.rename(columns={"Label": "AD_dx"})
 
