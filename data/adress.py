@@ -45,12 +45,15 @@ def load_CHAT_transcripts():
     transcripts["Filler speech"] = transcripts["Transcript"].str.contains(r"&(?!=)\w+").astype(int)
     transcripts["Repetition"] = transcripts["Transcript"].str.contains(r"\[/\]").astype(int)
     transcripts["Revision"] = transcripts["Transcript"].str.contains(r"\[//\]").astype(int)
-    transcripts["Repetitive speech"] = (transcripts["Repetition"] | transcripts["Revision"]).astype(int)
+    # transcripts["Repetitive speech"] = (transcripts["Repetition"] | transcripts["Revision"]).astype(int)
+    transcripts["Short pause"] = transcripts["Transcript"].str.contains(r"\(\.\)").astype(int)
+    transcripts["Medium pause"] = transcripts["Transcript"].str.contains(r"\(\.\.\)").astype(int)
+    transcripts["Long pause"] = transcripts["Transcript"].str.contains(r"\(\.\.\.\)").astype(int)
     transcripts["Speech delays"] = transcripts["Transcript"].str.contains(r"\(\.{1,3}\)|\^").astype(int)
     transcripts["Paraphasic speech"] = transcripts["Transcript"].str.contains(r"\[\* [A-Za-z0-9:=\-\']+\]|\[//\]").astype(int)
     transcripts["Vague speech"] = transcripts["Transcript"].str.contains(r"\[\+ (?:jar|es|cir)\]").astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetition", "Revision", "Repetitive speech", "Speech delays", "Vague speech", "Paraphasic speech"]]
+    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler speech", "Repetition", "Revision", "Short pause", "Medium pause", "Long pause", "Speech delays", "Vague speech", "Paraphasic speech"]]
 
 def load_outcomes():
     # control train
