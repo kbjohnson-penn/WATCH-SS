@@ -30,6 +30,9 @@ class KeywordDetector:
         args:
             text (str) - input text
             return_doc (bool) - whether to return the spacy doc (default is False)
+
+        return:
+            
         '''
         # Tokenize the input text
         doc = self.nlp(text)
@@ -37,10 +40,10 @@ class KeywordDetector:
         # Run spacy matcher
         matches = self.matcher(doc)
 
-        output = []
+        output = {"fillers": []}
         for match_id, start_token, end_token in matches:
             span = doc[start_token:end_token]
-            output.append((span.start_char, span.end_char, span.text))
+            output["fillers"].append({"text": span.text, "span": [span.start_char, span.end_char]})
 
         return output, doc if return_doc else output
     
