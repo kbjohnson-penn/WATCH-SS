@@ -42,9 +42,9 @@ def load_CHAT_transcripts():
     transcripts["Transcript_clean"] = transcripts["Transcript"].apply(clean_CHAT_text).str.strip()
 
     # labeling
-    transcripts["Filler speech"] = transcripts["Transcript"].str.contains(r"&\w+").astype(int)
-    transcripts["Repetition"] = transcripts["Transcript"].str.contains(r"\[\/\]").astype(int)
-    transcripts["Revision"] = transcripts["Transcript"].str.contains(r"\[\/\/\]").astype(int)
+    transcripts["Filler speech"] = transcripts["Transcript"].str.contains(r"&(?!=)\w+").astype(int)
+    transcripts["Repetition"] = transcripts["Transcript"].str.contains(r"\[/\]").astype(int)
+    transcripts["Revision"] = transcripts["Transcript"].str.contains(r"\[//\]").astype(int)
     transcripts["Repetitive speech"] = (transcripts["Repetition"] | transcripts["Revision"]).astype(int)
     transcripts["Speech delays"] = transcripts["Transcript"].str.contains(r"\(\.{1,3}\)|\^").astype(int)
     transcripts["Paraphasic speech"] = transcripts["Transcript"].str.contains(r"\[\* [A-Za-z0-9:=\-\']+\]|\[//\]").astype(int)
@@ -75,4 +75,4 @@ def load_outcomes():
     lbls["mmse"] = pd.to_numeric(lbls["mmse"], errors="coerce")
     lbls.index.names = ["split", "ID"]
 
-    return lbls
+    return lbls.sort_index()
