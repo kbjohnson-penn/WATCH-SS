@@ -21,6 +21,6 @@ class FillerKeywordDetector(KeywordDetector):
         output, doc = super().detect(text, return_doc=True)
 
         if self.flag_nonwords:
-            output["fillers"].extend([{"text": token.text, "span": [token.idx, token.idx + len(token)]} for token in doc if token.is_oov and not (token.is_punct or token.is_space or token._.is_silence_tag or token._.is_inaudible_tag or token._.is_event_tag)])
+            output["detections"].extend([{"text": token.text, "span": [token.idx, token.idx + len(token)]} for token in doc if token.is_oov and not (token.is_punct or token.is_space or token._.is_silence_tag or token._.is_inaudible_tag or token._.is_event_tag)])
 
         return output
