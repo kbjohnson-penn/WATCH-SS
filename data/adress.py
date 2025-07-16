@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 def split_train_into_train_dev(dev_size=0.3, num_seeds=100):
     np.random.seed(1234567)
-    
+
     trn_ids, dev_ids = [], []
     
     cn_trn_ocs = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
@@ -109,7 +109,7 @@ def load_transcripts():
     transcripts.index = pd.MultiIndex.from_arrays([new_split_idx, transcripts.index.get_level_values("ID"), transcripts.index.get_level_values("utt_num")], names=["split", "ID", "utt_num"])
 
     # labeling
-    transcripts["Filler"] = transcripts["Transcript"].str.contains(r"\b&(?!=)\w").astype(int)
+    transcripts["Filler"] = transcripts["Transcript"].str.contains(r"&(?!=)").astype(int)
     transcripts["Repetition"] = transcripts["Transcript"].str.contains(r"\[/\]").astype(int)
     transcripts["Revision"] = transcripts["Transcript"].str.contains(r"\[//\]").astype(int)
     transcripts["Short pause"] = transcripts["Transcript"].str.contains(r"\(\.\)").astype(int)
