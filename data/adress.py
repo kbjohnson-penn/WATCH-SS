@@ -117,6 +117,11 @@ def load_transcripts():
     transcripts["Long pause"] = transcripts["Transcript"].str.contains(r"\(\.\.\.\)").astype(int)
     transcripts["Speech delays"] = (transcripts["Short pause"] | transcripts["Medium pause"] | transcripts["Long pause"]).astype(int)
     transcripts["Vague"] = transcripts["Transcript"].str.contains(r"\[\+ (?:es|cir)\]").astype(int)
-    transcripts["Paraphasia"] = transcripts["Transcript"].str.contains(r"\[\*\]").astype(int)
+    transcripts["Phonological Paraphasia"] = transcripts["Transcript"].str.contains(r"\[\*\s+p[^\]]*\]").astype(int)
+    transcripts["Semantic Paraphasia"] = transcripts["Transcript"].str.contains(r"\[\*\s+s[^\]]*\]").astype(int)
+    transcripts["Neologistic Paraphasia"] = transcripts["Transcript"].str.contains(r"\[\*\s+n[^\]]*\]").astype(int)
+    transcripts["Morphological Paraphasia"] = transcripts["Transcript"].str.contains(r"\[\*\s+m[^\]]*\]").astype(int)
+    transcripts["Dysfluency"] = transcripts["Transcript"].str.contains(r"\[\*\s+d[^\]]*\]").astype(int)
+    transcripts["Paraphasia"] = (transcripts["Phonological Paraphasia"] | transcripts["Semantic Paraphasia"] | transcripts["Neologistic Paraphasia"] | transcripts["Morphological Paraphasia"] | transcripts["Dysfluency"]).astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler", "Repetition", "Revision", "Short pause", "Medium pause", "Long pause", "Speech delays", "Vague", "Paraphasia"]].sort_index()
+    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler", "Repetition", "Revision", "Short pause", "Medium pause", "Long pause", "Speech delays", "Vague", "Phonological Paraphasia", "Semantic Paraphasia", "Neologistic Paraphasia", "Morphological Paraphasia", "Dysfluency", "Paraphasia"]].sort_index()
