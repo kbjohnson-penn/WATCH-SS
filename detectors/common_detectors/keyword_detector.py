@@ -32,7 +32,10 @@ class KeywordDetector:
             return_doc (bool) - whether to return the spacy doc (default is False)
 
         return:
-            
+            (dict) : JSON object with key "detections" that a list of filler
+            objects, each having the following keys:
+                - "text" : the detected filler
+                - "span" : character span of detected filler
         '''
         # Tokenize the input text
         doc = self.nlp(text)
