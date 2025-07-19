@@ -1,4 +1,5 @@
 import re
+import json
 # spaCy
 import spacy
 from spacy.language import Language
@@ -29,7 +30,6 @@ llms = {
         "rpm": None
     }
 }
-
 
 
 def create_custom_nlp(model="en_core_web_md"):
@@ -82,9 +82,22 @@ def create_custom_nlp(model="en_core_web_md"):
     return nlp
 
 
+def doc_word_count(doc):
+    '''
+    Function to count words in a spaCy doc object
+    using custom nlp above.
+
+    args:
+        doc (spacy.tokens.doc.Doc): spaCy doc object
+
+    return:
+        (int): number of words in doc
+    '''
+    return sum([1 for token in doc if not (token.is_punct or token.is_space or token._.is_silence_tag or token._.is_inaudible_tag or token._.is_event_tag)])
+    
 
 @mlflow.trace
-def llm_call(client, model: str, dev_prompt: str, usr_prompt: str, response_fmt: dict = {"type": "text"}, temperature: float = 0.0, top_p: float = 0.95):
+def llm_call(client, model: str, dev_prompt: str, usr_prompt: str, response_fmt: dict = {"type": "text"}, temperature: float = 0.0, top_p: float = 1.0):
     '''
     LLM call function with MLFlow tracing active.
 
@@ -95,17 +108,17 @@ def llm_call(client, model: str, dev_prompt: str, usr_prompt: str, response_fmt:
         usr_prompt (str) : user prompt
         response_fmt (dict or None) : response format, default = {"type": "text"}
         temperature (float) : temperature parameter, default = 0.0
-        top_p (float) : top_p parameter, default = 0.95
+        top_p (float) : top_p parameter, default = 1.0
 
     return:
         (str or dict) : LLM response as string or JSON dict if response_fmt indicates JSON
     '''
     messages = []
     if dev_prompt is not None:
-        messgaes.append({"role": "developer", "content": dev_prompt})
+        messages.append({"role": "developer", "content": dev_prompt})
     if usr_prompt is not None:
         messages.append({"role": "user", "content": usr_prompt})
-
+    
     response = client.chat.completions.create(
         model=model,
         messages=messages,
