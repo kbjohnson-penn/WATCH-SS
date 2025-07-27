@@ -14,7 +14,7 @@ class KeywordDetector:
 
         # Create spaCy matcher
         self.matcher = Matcher(self.nlp.vocab)
-        patterns = [[{"LOWER": w}  for w in kw.lower().split()] for kw in self.keywords]
+        patterns = [[{"LOWER": tok.text} for tok in self.nlp(kw)] for kw in self.keywords]
         self.matcher.add("keywords", patterns)
 
     def get_keywords(self):
@@ -48,5 +48,8 @@ class KeywordDetector:
             span = doc[start_token:end_token]
             output["detections"].append({"text": span.text, "span": [span.start_char, span.end_char]})
 
-        return output, doc if return_doc else output
+        if return_doc:
+            return output, doc
+        
+        return output
     
