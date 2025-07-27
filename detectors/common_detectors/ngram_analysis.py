@@ -53,11 +53,10 @@ class NgramAnalysis:
         return:
             (dict) : JSON object with key "detections" that a list of repetition
             objects, each having the following keys:
-                - "type" : "repetition"
-                - "phrase1" : first phrase
-                - "span1" : list of character span of first phrase
-                - "phrase2" : second phrase
-                - "span2" : list of character span of second phrase
+                - "text1" : the first occurrence
+                - "span1" : character span list for first occurrence
+                - "text2" : the second occurence
+                - "span2" : character span list for second occurrence
         '''
         # Tokenize the input text
         doc = self.nlp(text)
@@ -73,10 +72,9 @@ class NgramAnalysis:
                 for j in range(max(0, i - self.window_size), i-n+1):
                     if self._compare_ngrams(ngs[j], ngs[i], doc):
                         output["detections"].append({
-                                "type": "repetition",
-                                "phrase1": doc[ngs[j][0].i:ngs[j][-1].i+1].text, 
+                                "text1": doc[ngs[j][0].i:ngs[j][-1].i+1].text, 
                                 "span1": [ngs[j][0].idx, ngs[j][-1].idx + len(ngs[j][-1])], 
-                                "phrase2": doc[ngs[i][0].i:ngs[i][-1].i+1].text, 
+                                "text2": doc[ngs[i][0].i:ngs[i][-1].i+1].text, 
                                 "span2": [ngs[i][0].idx, ngs[i][-1].idx + len(ngs[i][-1])]
                         })
 
