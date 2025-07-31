@@ -1,5 +1,6 @@
 import re
 import json
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, balanced_accuracy_score
 # spaCy
 import spacy
 from spacy.language import Language
@@ -131,3 +132,15 @@ def llm_call(client, model: str, dev_prompt: str, usr_prompt: str, response_fmt:
         return json.loads(response.choices[0].message.content)
     else:
         return response.choices[0].message.content
+
+def evaluate(true, pred, return_latex=False):
+    prec = precision_score(true, pred)
+    rec  = recall_score(true, pred)
+    f1   = f1_score(true, pred)
+    acc  = accuracy_score(true, pred)
+    bacc = balanced_accuracy_score(true, pred)
+
+    if return_latex:
+        return f"{prec:.3f} & {rec:.3f} & {f1:.3f} & {acc:.3f} & {bacc:.3f} \\\\"
+
+    return {"precision": prec, "recall": rec, "f1": f1, "accuracy": acc, "balanced_accuracy": bacc}
