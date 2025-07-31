@@ -46,7 +46,7 @@ def load_visit_transcript(provider_id, patient_id, date):
     transcript["Text"] = transcript.apply(lambda x: f"{x.Timestamp} {x.Speaker}: {x.Transcript}", axis=1)
     return transcript
 
-def load_transcripts():
+def load_penn_transcripts():
     clinic_data_dir = "/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/clinic"
 
     idxs, transcripts = [], []
@@ -59,11 +59,27 @@ def load_transcripts():
                 idxs.append( f )
 
     transcripts = pd.concat(transcripts, keys=idxs, names=["visit_file", "line_num"])
+
+    # new index
+    pattern = r'(PR\d+)_(PT\d+)_(\d{2}\.\d{2}\.\d{4})'
+    new_idx = transcripts.index.get_level_values("visit_file").str.extract(pattern)
+    new_idx.columns = ["provider_id", "patient_id", "date"]
+    new_idx["date"] = pd.to_datetime(new_idx["date"])
+    new_idx["line_num"] = transcripts.index.get_level_values("line_num")
+    new_idx = pd.MultiIndex.from_frame(new_idx)
+    transcripts.index = new_idx
+
     return transcripts
 
-def load_labels():
+def load_penn_cogtst_scores():
     lbls = pd.read_excel("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/swimcap/Penn OBSERVER/cognitive_test_scores.xlsx")
     return lbls
+
+def load_penn_outcomes():
+    outcomes = pd.read_excel("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/watch/penn_AD_labels.xlsx")
+    outcomes["date"] = pd.to_datetime(outcomes["date"])
+    outcomes = outcomes.set_index(["provider_id", "patient_id", "date"])
+    return outcomes
 
 def load():
     visits = load_visits()
