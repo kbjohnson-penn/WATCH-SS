@@ -1,8 +1,8 @@
 from ..common_detectors.keyword_detector import KeywordDetector
-# from .keywords_config import keywords
+from .keywords_config import keywords as default_keywords
 
 class FillerKeywordDetector(KeywordDetector):
-    def __init__(self, nlp, keywords, flag_nonwords=False):
+    def __init__(self, nlp, keywords=default_keywords, flag_nonwords=False):
         '''
         Initializes the FillerKeywordDetector class.
 

@@ -1,7 +1,15 @@
 from ..common_detectors.ngram_analysis import NgramAnalysis
 
 class UnigramAnalysisDetector(NgramAnalysis):
-    def __init__(self, nlp, window_size, comparator="exact"):
+    def __init__(self, nlp, window_size=2, comparator="exact"):
+        '''
+        Initialize the detector.
+
+        args:
+            nlp (spacy.lang) : spacy language model
+            window_size (int) : window size for checking previous unigrams, default = 2
+            comparator (str) : comparison function for unigrams, default = "exact" match
+        '''
         self.comparator = comparator
         super().__init__(nlp, max_N=1, window_size=window_size)
 
