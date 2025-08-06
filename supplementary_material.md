@@ -17,28 +17,28 @@ To determine the optimal keyword set for the baseline filler keyword detector, w
 
 **Table A2**: Performance of keyword sets for the filler keyword detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are underlined.
 
-| Keyword Set | Precsision | Recall | Accuracy | Balanced Accuracy |
-| :---------- | :--------: | :----: | :------: | :---------------: |
-| Sounds | **0.981** | 0.827 | 0.898 | 0.952 |
-| Letters | 0.349 | 0.447 | 0.392 | 0.643 |
-| Uncommon Letters | 0.957 | 0.176 | 0.298 | 0.786 |
-| Words | 0.341 | 0.122 | 0.179 | 0.713 |
-| Non-Words | 0.292 | 0.027 | 0.050 | 0.733 |
-| Phrases | 0.276 | 0.031 | 0.056 | 0.730 |
-| Sounds + Letters | 0.531 | <u>0.965</u> | 0.685 | 0.772 |
-| Sounds + Uncommon Letters | \underline{0.975} | 0.922 | **0.948** | **0.974** |
-| Sounds + Words | 0.772 | 0.835 | 0.802 | 0.894 |
-| Sounds + Non-Words | 0.910 | 0.835 | 0.871 | 0.936 |
-| Sounds + Phrases | 0.895 | 0.835 | 0.864 | 0.932 |
-| Sounds + Uncommon Letters + Words | 0.785 | 0.929 | 0.851 | 0.916 |
-| Sounds + Uncommon Letters + Non-Words | 0.911 | 0.925 | \underline{0.918} | \underline{0.958} | 
-| Sounds + Uncommon Letters + Phrases | 0.843 | 0.929 | 0.884 | 0.937 |
-| Sounds + Words + Non-Words | 0.837 | 0.843 | 0.840 | 0.917 |
-| Sounds + Non-Words + Phrases | 0.837 | 0.843 | 0.840 | 0.917 |
-| Sounds + Uncommon Letters + Non-Words + Words | 0.746 | 0.933 | 0.829 | 0.901 |
-| Sounds + Uncommon Letters + Non-Words + Phrases | 0.843 | 0.929 | 0.884 | 0.937 |
-| Sounds + Letters + Words + Phrases + Non-Words | 0.482 | **0.973** | 0.644 | 0.724 |
-| Sounds + Uncommon Letters + Words + Non-Words + Phrases | 0.703 | 0.937 | 0.803 | 0.882 |
+| Keyword Set | Precsision | Recall | F1  | Accuracy | Balanced Accuracy |
+| :---------- | :--------: | :----: | :-: | :------: | :---------------: |
+| Sounds | **0.981** | 0.827 | 0.898 | 0.952 | 0.911 |
+| Letters | 0.349 | 0.447 | 0.392 | 0.643 | 0.579 |
+| Uncommon Letters | 0.957 | 0.176 | 0.298 | 0.786 | 0.587 |
+| Words | 0.341 | 0.122 | 0.179 | 0.713 | 0.520 |
+| Non-Words | 0.292 | 0.027 | 0.050 | 0.733 | 0.502 |
+| Phrases | 0.276 | 0.031 | 0.056 | 0.730 | 0.501 |
+| Sounds + Letters | 0.531 | \underline{0.965} | 0.685 | 0.772 | 0.835 |
+| Sounds + Uncommon Letters | \underline{0.975} | 0.922 | **0.948** | **0.974** | **0.957** |
+| Sounds + Words | 0.772 | 0.835 | 0.802 | 0.894 | 0.875 |
+| Sounds + Non-Words | 0.910 | 0.835 | 0.871 | 0.936 | 0.903 |
+| Sounds + Phrases | 0.895 | 0.835 | 0.864 | 0.932 | 0.901 |
+| Sounds + Uncommon Letters + Words | 0.785 | 0.929 | 0.851 | 0.916 | 0.921 |
+| Sounds + Uncommon Letters + Non-Words | 0.911 | 0.925 | \underline{0.918} | \underline{0.958} | \underline{0.947} |
+| Sounds + Uncommon Letters + Phrases | 0.843 | 0.929 | 0.884 | 0.937 | 0.935 |
+| Sounds + Words + Non-Words | 0.837 | 0.843 | 0.840 | 0.917 | 0.893 |
+| Sounds + Non-Words + Phrases | 0.837 | 0.843 | 0.840 | 0.917 | 0.893 |
+| Sounds + Uncommon Letters + Non-Words + Words | 0.746 | 0.933 | 0.829 | 0.901 | 0.912 |
+| Sounds + Uncommon Letters + Non-Words + Phrases | 0.843 | 0.929 | 0.884 | 0.937 | 0.935 |
+| Sounds + Letters + Words + Phrases + Non-Words | 0.482 | **0.973** | 0.644 | 0.724 | 0.805 |
+| Sounds + Uncommon Letters + Words + Non-Words + Phrases | 0.703 | 0.937 | 0.803 | 0.882 | 0.900 |
 
 ## Appendix B. Prompt for the Filler Speech LLM-Based Detector
 
