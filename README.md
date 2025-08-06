@@ -1,4 +1,4 @@
-# WATCH-SS: Warning Assessment and Alerting Tool for Cognitive Health for Spontaneous Speech
+# WATCH-SS
 
 NOTE: Need to change the name to something more general on detecting diagnostic clues for cognitive impairment from language.
 
