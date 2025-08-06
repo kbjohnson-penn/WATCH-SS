@@ -15,7 +15,7 @@ To determine the optimal keyword set for the baseline filler keyword detector, w
 | Non-Words | Phonological fragments or neologisms not in a standard vocabulary, identified as out-of-vocabulary (OOV) tokens. | spaCy Out-of-Vocabulary (OOV) tokens |
 | Phrases | Common multi-word discourse markers. | i mean, i guess, you know, you see |
 
-**Table A2**: Performance of keyword sets for the filler keyword detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are underlined.
+**Table A2**: Performance of keyword sets for the filler keyword detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are italicized.
 
 | Keyword Set | Precsision | Recall | F1  | Accuracy | Balanced Accuracy |
 | :---------- | :--------: | :----: | :-: | :------: | :---------------: |
@@ -25,13 +25,13 @@ To determine the optimal keyword set for the baseline filler keyword detector, w
 | Words | 0.341 | 0.122 | 0.179 | 0.713 | 0.520 |
 | Non-Words | 0.292 | 0.027 | 0.050 | 0.733 | 0.502 |
 | Phrases | 0.276 | 0.031 | 0.056 | 0.730 | 0.501 |
-| Sounds + Letters | 0.531 | \underline{0.965} | 0.685 | 0.772 | 0.835 |
-| Sounds + Uncommon Letters | \underline{0.975} | 0.922 | **0.948** | **0.974** | **0.957** |
+| Sounds + Letters | 0.531 | *0.965* | 0.685 | 0.772 | 0.835 |
+| Sounds + Uncommon Letters | *0.975* | 0.922 | **0.948** | **0.974** | **0.957** |
 | Sounds + Words | 0.772 | 0.835 | 0.802 | 0.894 | 0.875 |
 | Sounds + Non-Words | 0.910 | 0.835 | 0.871 | 0.936 | 0.903 |
 | Sounds + Phrases | 0.895 | 0.835 | 0.864 | 0.932 | 0.901 |
 | Sounds + Uncommon Letters + Words | 0.785 | 0.929 | 0.851 | 0.916 | 0.921 |
-| Sounds + Uncommon Letters + Non-Words | 0.911 | 0.925 | \underline{0.918} | \underline{0.958} | \underline{0.947} |
+| Sounds + Uncommon Letters + Non-Words | 0.911 | 0.925 | *0.918* | *0.958* | *0.947* |
 | Sounds + Uncommon Letters + Phrases | 0.843 | 0.929 | 0.884 | 0.937 | 0.935 |
 | Sounds + Words + Non-Words | 0.837 | 0.843 | 0.840 | 0.917 | 0.893 |
 | Sounds + Non-Words + Phrases | 0.837 | 0.843 | 0.840 | 0.917 | 0.893 |
@@ -69,17 +69,17 @@ Your output must be a single JSON object with a single key "detections" whose va
 
 We performed a hyperparameter search for the repetitive speech detector based on unigram analysis to determine the optimal configuration that maximizes the F1-score. We evaluated five window sizes (K = 1, 2, 3, 5, and 10) and two comparator functions (an exact match and a lemma-based match, both case-insensitive). The results are shown in Table C1.
 
-**Table C1**: Hyperparameter search for the word repetition n-gram analysis detector on the ADReSS train data. The best scores are highlighted in boldface and the second best scores are underlined.
+**Table C1**: Hyperparameter search for the word repetition n-gram analysis detector on the ADReSS train data. The best scores are highlighted in boldface and the second best scores are italicized.
 
 | Window Size | Comparator | Precision | Recall | F1  | Accuracy | Balanced Accuracy |
 | :---------: | :--------: | :-------: | :----: | :-: | :------: | :---------------: |
 | 1 | exact | **0.849** | 0.529 | 0.652 | **0.952** | 0.760 |
-| 2 | exact | 0.650 | 0.894 | **0.752** | \underline{0.950} | 0.924 |   
+| 2 | exact | 0.650 | 0.894 | **0.752** | *0.950* | 0.924 |   
 | 3 | exact | 0.456 | 0.965 | 0.619 | 0.898 | **0.928** |
-| 5 | exact | 0.293 | \underline{0.988} | 0.452 | 0.794 | 0.882 |
-| 10 | exact | 0.241 | \underline{0.988} | 0.388 | 0.733 | 0.848 |
-| 1 | lemma exact | \underline{0.818} | 0.529 | 0.643 | \underline{0.950} | 0.759 |
-| 2 | lemma exact | 0.616 | 0.906 | \underline{0.733} | 0.943 | \underline{0.926} |
+| 5 | exact | 0.293 | *0.988* | 0.452 | 0.794 | 0.882 |
+| 10 | exact | 0.241 | *0.988* | 0.388 | 0.733 | 0.848 |
+| 1 | lemma exact | *0.818* | 0.529 | 0.643 | *0.950* | 0.759 |
+| 2 | lemma exact | 0.616 | 0.906 | *0.733* | 0.943 | *0.926* |
 | 3 | lemma exact | 0.409 | 0.976 | 0.576 | 0.877 | 0.922 |
 | 5 | lemma exact | 0.270 | **1.000** | 0.425 | 0.768 | 0.873 |
 | 10 | lemma exact | 0.230 | **1.000** | 0.374 | 0.713 | 0.843 |
@@ -138,14 +138,14 @@ Your output must be a single JSON object with a single key "detections" whose va
 
 Table E1 shows the performance of the MLM-based detector for finding substitution errors using various percentiles for the cutoff threshold for the fusion scores. The results demonstrate the classic precision-recall tradeoff: lower thresholds (90th percentile) maximize recall at the cost of precision, while higher thresholds become too restrictive, missing errors entirely. Substitution errors are scarce in the data so we select the threshold with highest recall, namely the 90th percentile, to maximally detect annotated errors. 
 
-**Table E1**: Evaluation of percentile cutoffs for fusion score for the substitution error MLM-based detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are underlined.
+**Table E1**: Evaluation of percentile cutoffs for fusion score for the substitution error MLM-based detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are italicized.
 
 | Threshold Percentile | Precision | Recall | F1  | Accuracy | Balanced Accuracy |
 | :------------------: | :-------: | :----: | :-: | :------: | :---------------: |
-| 90 | 0.047 | **0.771** | \underline{0.089} | 0.445 | **0.602** |
-| 92.5 | \underline{0.049} | \underline{0.657} | **0.092** | 0.542 | \underline{0.597} |
+| 90 | 0.047 | **0.771** | *0.089* | 0.445 | **0.602** |
+| 92.5 | *0.049* | *0.657* | **0.092** | 0.542 | *0.597* |
 | 95 | **0.051** | 0.486 | **0.092** | 0.662 | 0.577 |
-| 98 | 0.030 | 0.114 | 0.047 | \underline{0.838} | 0.489 |
+| 98 | 0.030 | 0.114 | 0.047 | *0.838* | 0.489 |
 | 99 | 0.029 | 0.057 | 0.039 | **0.900** | 0.494 |
 
 ## Appendix F. Prompt for the Substitution Errors LLM-Based Detector
@@ -192,13 +192,13 @@ We considered two categories of vague key words and phrases defined in Table G1,
 | Non-Specific Referents | Words that refer to people, places, or things in vague or general terms without being specific. | anybody, anyone, anything, area, everything, here, it, nothing, one, ones, part, place, people, person, that, there, thing, things, this, someone, somebody, something, stuff, whatever, whichever |
 | Hedges | Words and phrases that express uncertainty, approximation, or qualification. | basically, maybe, probably, possibly, potentially, perhaps, somewhat, i guess, i think, kind of, pretty much, sort of, i don't know, more or less |
 
-**Table G2**: Performance of different keyword set configurations for the vague speech keyword detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are underlined.
+**Table G2**: Performance of different keyword set configurations for the vague speech keyword detector on the ADReSS training data. The best scores are highlighted in boldface and the second best scores are italicized.
 
 | Keyword Set | Precsision | Recall | Accuracy | Balanced Accuracy |
 | :---------- | :--------: | :----: | :------: | :---------------: |
-| Non-specific Referents | **0.031** | **0.917** | **0.060** | \underline{0.654} | **0.784** |
+| Non-specific Referents | **0.031** | **0.917** | **0.060** | *0.654* | **0.784** |
 | Hedges | 0.013 | 0.083 | 0.022 | **0.910** | 0.502 |
-| Non-specific Referents + Hedges | \underline{0.028} | **0.917** | \underline{0.054} | 0.610 | \underline{0.762} |
+| Non-specific Referents + Hedges | *0.028* | **0.917** | *0.054* | 0.610 | *0.762* |
 
 ## Appendix H: Prompt for the Vague Speech LLM-Based Detector
 
@@ -237,19 +237,19 @@ Your output must be a single JSON object with a single key "detections" whose va
         {"type": "vague", "text": "or somethin", "utt_num": 6, "span": [32, 42]}, 
         {"type": "vague", "text": "or somethin", "utt_num": 9, "span": [41, 51]}
     ] 
-} 
+* 
 
 **Incorrect Output** 
 { 
     "detections": [
-        {"type": "vague", "text": "[silence]", "utt_num": 8, "span": [0, 9]}, 
-        {"type": "vague", "text": "that girl", "utt_num": 10, "span": [32, 42]}
+        {"type": "vague", "text": "[silence]", "utt_num": 8, "span": [0, 9]*, 
+        {"type": "vague", "text": "that girl", "utt_num": 10, "span": [32, 42]*
     ] 
-} 
+* 
 Error: Incorrectly flags (1) "that girl" which was used to identify a person by age and gender rather than express uncertainty about who this person is, and (2) annotation markers ([silence]). 
 
 # INPUT 
-{transcript}
+{transcript*
 ```
 
 ## Appendix I: Hyperparameter Tuning for the Speech Delays Detector
@@ -310,7 +310,7 @@ Univariate tests for each summary feature from Section 3.4 was performed on the 
 
 Table K1 provides a comprehensive performance comparison of all seven machine learning models evaluated to predict cognitive impairment (i.e., the "AD" label) on the ADReSS data. For all models, we report the scores for the best-performing hyperparameter configuration determined through manual tuning. The training performance scores are based on the ensembled cross-validation predictions. The LightGBM model performs the best for all metrics in the training dataset, thus we use this as the primary model for \toolname. This model also achieves the most balanced performance on the test data.
 
-**Table K1**: Evaluation of candidate models for predicting cognitive impairment on the ADReSS datasets. The best value is highlighted in boldface and the second best value is underlined.
+**Table K1**: Evaluation of candidate models for predicting cognitive impairment on the ADReSS datasets. The best value is highlighted in boldface and the second best value is italicized.
 
 | Model | CV | Train Precision | Train Recall | Train F1 | Train Accuracy | Test Precision | Test Recall | Test F1 | Test Accuracy |
 | :---- | :- | :-------------: | :----------: | :------: | :------------: | :------------: | :---------: | :-----: | :-----------: |
@@ -320,12 +320,12 @@ Table K1 provides a comprehensive performance comparison of all seven machine le
 | | RSKF | 0.737 | 0.664 | 0.678 | 0.713 | 0.667 | 0.667 | 0.667 | 0.667  |
 | HGBC | LOO | 0.730 | 0.730 | 0.730 | 0.733 | 0.704 | **0.792** | 0.745 | 0.729 |
 | | RSKF | 0.637 | 0.657 | 0.633 | 0.654 | 0.655 | **0.792** | 0.717 | 0.688  |
-| LightGBM | LOO | **0.938** | **0.811** | **0.870** | **0.880** | **0.783** | \underline{0.750} | **0.766** | **0.771** |
-| | RSKF | 0.755 | 0.702 | 0.697 | 0.724 | \underline{0.750} | \underline{0.750} | \underline{0.750} | \underline{0.750} |
-| XGBoost | LOO | \underline{0.933} | \underline{0.757} | \underline{0.836} | \underline{0.853} | 0.704 | **0.792** | 0.745 | 0.729  |
+| LightGBM | LOO | **0.938** | **0.811** | **0.870** | **0.880** | **0.783** | *0.750* | **0.766** | **0.771** |
+| | RSKF | 0.755 | 0.702 | 0.697 | 0.724 | *0.750* | *0.750* | *0.750* | *0.750* |
+| XGBoost | LOO | *0.933* | *0.757* | *0.836* | *0.853* | 0.704 | **0.792** | 0.745 | 0.729  |
 | | RSKF | 0.747 | 0.639 | 0.661 | 0.708 | 0.747 | 0.639 | 0.661 | 0.708 |
 | K-Nearest Neighbors | LOO | 0.655 | 0.514 | 0.576 | 0.627 | 0.733 | 0.458 | 0.564 | 0.646  |
 | | RSKF | 0.729 | 0.550 | 0.600 | 0.655 | 0.733 | 0.458 | 0.564 | 0.646 |
-| Support Vector Machine | LOO | 0.686 | 0.649 | 0.667 | 0.680 | \underline{0.7500} | 0.625 | 0.682 | 0.708  |
-| | RSKF | 0.718 | 0.658 | 0.668 | 0.702 | \underline{0.750} | 0.625 | 0.682 | 0.708 |
+| Support Vector Machine | LOO | 0.686 | 0.649 | 0.667 | 0.680 | *0.7500* | 0.625 | 0.682 | 0.708  |
+| | RSKF | 0.718 | 0.658 | 0.668 | 0.702 | *0.750* | 0.625 | 0.682 | 0.708 |
 
