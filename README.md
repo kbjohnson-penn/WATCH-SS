@@ -2,6 +2,20 @@
 
 WATCH-SS is a trustworthy and interpretable modular framework for detecting cognitive impairment from a patient's speech sample. The manuscript for WATCH-SS is currently under review. A preprint is available [here](https://www.medrxiv.org/content/10.1101/2025.08.06.25333047v1).
 
+## Contents
+```
+|- data/							# Code to load and preprocess ADReSS/OBSERVER datasets
+|- preprocess/						# 
+|- detectors/						# Code for the detectors for CI indicators
+|- notebooks/						# Jupyter notebooks for detector development and experiments
+|- fig/								# Figure files for Markdown files
+|- utils.py							# 
+|- requirements.txt					# List of Python dependencies for WATCH-SS
+|- supplementary_material.pdf		# PDF version of supplementary material for WATCH-SS manuscript
+|- supplementary_material.md		# Markdown version of supplementary material for WATCH-SS manuscript
+|- README.md 						# This file
+```
+
 <!---
 ## Annotate Silences in Transcripts
 The `annotate_silences.py` Python script allows you to annotate silence periods in audio files and add these annotations to corresponding transcripts. It currently supports Whisper and CrisperWhisper transcripts.
