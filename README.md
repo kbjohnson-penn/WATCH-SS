@@ -5,11 +5,11 @@ WATCH-SS is a trustworthy and interpretable modular framework for detecting cogn
 ## Contents
 ```
 |- data/							# Code to load and preprocess ADReSS/OBSERVER datasets
-|- preprocess/						# 
 |- detectors/						# Code for the detectors for CI indicators
 |- notebooks/						# Jupyter notebooks for detector development and experiments
 |- fig/								# Figure files for Markdown files
-|- utils.py							# 
+|- utils.py							# Code for supporting functions
+|- compute_init.sh					# Microsoft Azure Databricks compute initialization script
 |- requirements.txt					# List of Python dependencies for WATCH-SS
 |- supplementary_material.pdf		# PDF version of supplementary material for WATCH-SS manuscript
 |- supplementary_material.md		# Markdown version of supplementary material for WATCH-SS manuscript
