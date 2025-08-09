@@ -242,14 +242,14 @@ Your output must be a single JSON object with a single key "detections" whose va
 **Incorrect Output** 
 { 
     "detections": [
-        {"type": "vague", "text": "[silence]", "utt_num": 8, "span": [0, 9]*, 
-        {"type": "vague", "text": "that girl", "utt_num": 10, "span": [32, 42]*
+        {"type": "vague", "text": "[silence]", "utt_num": 8, "span": [0, 9]}, 
+        {"type": "vague", "text": "that girl", "utt_num": 10, "span": [32, 42]}
     ] 
 * 
 Error: Incorrectly flags (1) "that girl" which was used to identify a person by age and gender rather than express uncertainty about who this person is, and (2) annotation markers ([silence]). 
 
 # INPUT 
-{transcript*
+{transcript}
 ```
 
 ## Appendix I: Hyperparameter Tuning for the Speech Delays Detector
@@ -258,7 +258,7 @@ We tune the silence threshold for the speech delays detector to maximize recall 
 
 **Figure I1**: Performance of the silence detector at identifying speech delays for varying choice of minimum silence threshold on the ADReSS training data.
 
-![Silence threshold optimization plot.](fig/silence_thresh_opt.png)
+![Silence threshold optimization plot.](./fig/silence_thresh_opt.png)
 
 ## Appendix J: Univariate Analysis of Summary Features
 
