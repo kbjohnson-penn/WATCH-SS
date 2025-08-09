@@ -258,7 +258,9 @@ We tune the silence threshold for the speech delays detector to maximize recall 
 
 **Figure I1**: Performance of the silence detector at identifying speech delays for varying choice of minimum silence threshold on the ADReSS training data.
 
-![Silence threshold optimization plot.](./fig/silence_thresh_opt.png)
+<p align="center">
+  <img src="./fig/silence_thresh.png" alt="Silence threshold optimization plot." width="500">
+</p>
 
 ## Appendix J: Univariate Analysis of Summary Features
 
