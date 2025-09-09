@@ -5,3 +5,5 @@ python -m pip install --upgrade spacy
 python -m spacy download en_core_web_sm
 python -m spacy download en_core_web_md
 python -m spacy download en_core_web_lg
+
+sudo apt-get update && sudo apt-get install -y ffmpeg
