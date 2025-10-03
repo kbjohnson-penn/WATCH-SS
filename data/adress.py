@@ -9,10 +9,10 @@ def split_train_into_train_dev(dev_size=0.3, num_seeds=100):
 
     trn_ids, dev_ids = [], []
     
-    cn_trn_ocs = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
+    cn_trn_ocs = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
     cn_trn_ocs.index = cn_trn_ocs.index.str.strip()
     cn_trn_ocs["AD_dx"] = 0
-    ad_trn_ocs = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
+    ad_trn_ocs = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
     ad_trn_ocs.index = ad_trn_ocs.index.str.strip()
     ad_trn_ocs["AD_dx"] = 1
 
@@ -33,13 +33,13 @@ def split_train_into_train_dev(dev_size=0.3, num_seeds=100):
 
 def load_outcomes():
     # control train
-    temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp1 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/train/cc_meta_data.txt", delimiter=";", index_col="ID   ")
     temp1.index = temp1.index.str.strip()
     temp1.columns = temp1.columns.str.strip()
     temp1["gender"] = temp1["gender"].map({" male ": 0, " female ": 1})
     temp1["AD_dx"] = 0
     # dementia train
-    temp2 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
+    temp2 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/train/cd_meta_data.txt", delimiter=";", index_col="ID   ")
     temp2.index = temp2.index.str.strip()
     temp2.columns = temp2.columns.str.strip()
     temp2["gender"] = temp2["gender"].map({" male ": 0, " female ": 1})
@@ -51,7 +51,7 @@ def load_outcomes():
     trn_dev.index = pd.MultiIndex.from_arrays([split_idx, trn_dev.index], names=["split", "ID"])
 
     # test
-    temp3 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/test/meta_data.txt", delimiter=";", index_col="ID   ")
+    temp3 = pd.read_csv("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/test/meta_data.txt", delimiter=";", index_col="ID   ")
     temp3.index = temp3.index.str.strip()
     temp3.columns = temp3.columns.str.strip()
     temp3 = temp3.rename(columns={"Label": "AD_dx"})
@@ -81,7 +81,7 @@ def clean_CHAT_text(text):
     return text
 
 def load_transcripts():
-    reader = pylangacq.read_chat("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/adresso/ADReSS-IS2020/")
+    reader = pylangacq.read_chat("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/")
 
     idxs, transcripts = [], []
     for file, f_utterances in zip(reader.file_paths(), reader.utterances(by_files=True)):
