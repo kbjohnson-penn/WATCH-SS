@@ -64,7 +64,7 @@ def load_outcomes():
 
     return lbls.sort_index()
 
-def clean_CHAT_text(text):
+def clean_CHAT_text(text, keep_filler=False):
     text = re.sub(r"\[.*?\]\s*", "", text)                                                  # remove CHAT "[...]" tags
     text = re.sub(r"\+<", "", text)                                                         # remove lazy overlap tags
     text = re.sub(r"<\s*(.*?)\s*>", r"\1", text)                                            # remove CHAT "<...>" tags
@@ -72,7 +72,8 @@ def clean_CHAT_text(text):
     text = re.sub(r"\([^)]*\)", "", text)                                                   # removing unspoken characters
     text = re.sub(r"xxx", "[inaudible]", text)                                              # replace unintelligible segments with inaudible tag to mimic Datagain
     text = re.sub(r"&=([\w:]+)", lambda m: f"[{m.group(1).replace(':', ' ')}]", text)       # reformat event tags 
-    text = re.sub(r"&(\w+)", r"\1", text)                                                   # remove & prefix for Fragments, Fillers, and Nonwords
+    if not keep_filler:
+        text = re.sub(r"&(\w+)", r"\1", text)                                               # remove & prefix for Fragments, Fillers, and Nonwords
     text = re.sub(r"\+\S+", "", text)                                                       # remove special utterance terminators
     text = re.sub(r"@\S+", "", text)                                                        # remove special form markers
     text = re.sub(r"([^\s_]+(?:_[^\s_]+)+)", lambda m: m.group(1).replace("_", " "), text)  # split compounds
@@ -80,7 +81,7 @@ def clean_CHAT_text(text):
     text = re.sub(r"(\w+):(\w+)", r"\1\2", text)                                            # remove prolongation markers
     return text
 
-def load_transcripts():
+def load_transcripts(annotate_filler=False):
     reader = pylangacq.read_chat("/Volumes/biomedicalinformatics_analytics/dev_lab_johnson/dementia_bank/ADReSS-IS2020/")
 
     idxs, transcripts = [], []
@@ -102,6 +103,8 @@ def load_transcripts():
     transcripts["Speaker"] = transcripts["Speaker"].map({"PAR": "Patient", "INV": "Provider"})
     transcripts["Transcript"] = transcripts["Transcript"].str.strip()
     transcripts["Transcript_clean"] = transcripts["Transcript"].apply(clean_CHAT_text).str.strip()
+    if annotate_filler:
+        transcripts["Transcript_clean_w_filler"] = transcripts["Transcript"].apply(clean_CHAT_text, keep_filler=True).str.strip()
 
     # separate train and dev
     trn_ids, dev_ids = split_train_into_train_dev()
@@ -124,4 +127,9 @@ def load_transcripts():
     transcripts["Dysfluency"] = transcripts["Transcript"].str.contains(r"\[\*\s+d[^\]]*\]").astype(int)
     transcripts["Substitution Error"] = (transcripts["Phonological Error"] | transcripts["Semantic Error"] | transcripts["Neologistic Error"] | transcripts["Morphological Error"] | transcripts["Dysfluency"]).astype(int)
 
-    return transcripts[["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler", "Repetition", "Revision", "Short pause", "Medium pause", "Long pause", "Speech delays", "Vague", "Phonological Error", "Semantic Error", "Neologistic Error", "Morphological Error", "Dysfluency", "Substitution Error"]].sort_index()
+    columns = ["T_start_ms", "T_end_ms", "Timestamp", "Speaker", "Transcript", "Transcript_clean", "Filler", "Repetition", "Revision", "Short pause", "Medium pause", "Long pause", "Speech delays", "Vague", "Phonological Error", "Semantic Error", "Neologistic Error", "Morphological Error", "Dysfluency", "Substitution Error"]
+    
+    if annotate_filler:
+        columns += ["Transcript_clean_w_filler"]
+
+    return transcripts[columns].sort_index()
