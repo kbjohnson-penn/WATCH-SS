@@ -71,15 +71,19 @@ def create_custom_nlp(model="en_core_web_md"):
             # Handle silence tags
             if re.fullmatch(r'\[silence( \d+s)?\]', token.text):
                 token._.is_silence_tag = True
+                token.pos_ = "X"
             # Handle inaudible tags
             elif token.text == "[inaudible]":
                 token._.is_inaudible_tag = True
+                token.pos_ = "X"
             # Handle filler words
             elif re.fullmatch(r"&[a-zA-Z_]+", token.text):
                 token._.is_filler = True
+                token.pos_ = "X"
             # Handle all other event tags
             elif re.fullmatch(r"\[[^\]]+\]", token.text):
                 token._.is_event_tag = True
+                token.pos_ = "X"
 
         return doc
 
@@ -88,7 +92,7 @@ def create_custom_nlp(model="en_core_web_md"):
     # Add custom merger component to pipeline
     nlp.add_pipe("merge_custom_tokens", first=True)
     # Add custom tagging component to pipeline
-    nlp.add_pipe("set_transcript_tags", after="merge_custom_tokens")
+    nlp.add_pipe("set_transcript_tags", last=True)
     print(f"Updated pipeline: {nlp.pipe_names}")
     return nlp
 
