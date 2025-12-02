@@ -45,40 +45,50 @@ def create_custom_nlp(model="en_core_web_md"):
         (spacy.lang): spaCy model
     '''
     # Register custom attributes
-    for tag_name in ["is_silence_tag", "is_inaudible_tag", "is_event_tag"]:
+    for tag_name in ["is_silence_tag", "is_inaudible_tag", "is_event_tag", "is_filler"]:
         if not Token.has_extension(tag_name):
             Token.set_extension(tag_name, default=False)
+
+    # Customize the tokenizer to look for text brackets and & prefix
+    SPECIAL_PATTERN = re.compile(r"(\[[^\]]+\]|&[a-zA-Z_]+)")
+
+    @Language.component("merge_custom_tokens")
+    def merge_custom_tokens_component(doc):
+        with doc.retokenize() as retokenizer:
+            for match in SPECIAL_PATTERN.finditer(doc.text):
+                # Get the span of the match in the doc
+                start, end = match.span()
+                span = doc.char_span(start, end)
+                # If a valid span is found (it aligns with token boundaries)
+                if span is not None:
+                    retokenizer.merge(span)
+        return doc
 
     # Custom pipeline component to set transcript special tags
     @Language.component("set_transcript_tags")
     def set_transcript_tags_component(doc):
         for token in doc:
             # Handle silence tags
-            if re.match(r'\[silence\b.*\]', token.text):
+            if re.fullmatch(r'\[silence( \d+s)?\]', token.text):
                 token._.is_silence_tag = True
             # Handle inaudible tags
             elif token.text == "[inaudible]":
                 token._.is_inaudible_tag = True
+            # Handle filler words
+            elif re.fullmatch(r"&[a-zA-Z_]+", token.text):
+                token._.is_filler = True
             # Handle all other event tags
-            elif re.match(r"^\[.*\]$", token.text):
+            elif re.fullmatch(r"\[[^\]]+\]", token.text):
                 token._.is_event_tag = True
-        return doc    
+
+        return doc
 
     # Load the spaCy model
     nlp = spacy.load(model)
-
-    # Customize the tokenizer to look for text brackets
-    nlp.tokenizer = Tokenizer(nlp.vocab, 
-                              rules=nlp.Defaults.tokenizer_exceptions,
-                              prefix_search=spacy.util.compile_prefix_regex(nlp.Defaults.prefixes).search,
-                              suffix_search=spacy.util.compile_suffix_regex(nlp.Defaults.suffixes).search,
-                              infix_finditer=spacy.util.compile_infix_regex(nlp.Defaults.infixes).finditer,
-                              token_match=re.compile(r"\[[^\]]+\]").match
-    )
-    
+    # Add custom merger component to pipeline
+    nlp.add_pipe("merge_custom_tokens", first=True)
     # Add custom tagging component to pipeline
-    nlp.add_pipe("set_transcript_tags", first=True)
-    
+    nlp.add_pipe("set_transcript_tags", after="merge_custom_tokens")
     print(f"Updated pipeline: {nlp.pipe_names}")
     return nlp
 
